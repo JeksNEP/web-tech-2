@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy import insert, select
 from utils.password import hash_password, verify_password
-from models.Users import users
+from models.Users import UserRole, users
 from utils.token import create_access_token
 
 
