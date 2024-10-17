@@ -1,7 +1,8 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from databases import Database
 import sqlalchemy
-from handlers import users_handler
+import database
+from handlers import books_handler, users_handler
 from schemas.user import UserCreate, UserAuthorize
 from database import metadata
 from utils.token import validate_token_and_role
@@ -19,7 +20,7 @@ async def root():
 async def create_user(user):
     return await users_handler.create_user(user.database)
 
-@app.post("/users/authorize")
+@app.post("/users/authorize")   
 async def create_user(user):
     return await users_handler.authorize_user(user.database)
 
@@ -29,4 +30,12 @@ async def check_credentials(user = Depends(validate_token_and_role(["user","admi
 
 @app.get("/without-credentials")
 async def check_credentials():
-    return {"msg": "Wlcome all"}
+    return {"msg": "Welcome all"}
+
+@app.post("/create-book")
+async def create_book(title = Form(...), author = Form(...), description = Form(...), file: UploadFile = File(...), user = Depends(validate_token_and_role(["admin"]))):
+    return await books_handler.upload_book(database, title, author, description, file,)
+
+@app.get("/books/get-book/{book_id}")
+async def download_book(book_id, user = Depends(validate_token_and_role(["user","admin","aprooved_user"]))):
+    return await books_handler.download_book(database,)
