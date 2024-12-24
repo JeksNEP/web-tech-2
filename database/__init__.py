@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, MetaData
-from database import Database
+from databases import Database
 
 
 DATABASE_URL = "postgresql://user:1234@localhost:5423/library"

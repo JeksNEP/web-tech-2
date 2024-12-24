@@ -8,6 +8,6 @@ books = Table(
     Column("id", Integer, primary_key=True, index=True),
     Column("title", String(200)),
     Column("author", String(100)),
-    Column("Description", String),
+    Column("description", String),
     Column("link", String(50))
 )

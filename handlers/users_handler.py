@@ -38,7 +38,7 @@ async def authorize_user(user, db):
         raise HTTPException(status_code=400, detail="User not found")
     
     token = create_access_token(
-        data={"sub": existing_user["name"], "role": existing_user["role"]}
+        data={"sub": existing_user["name"], "role": existing_user["role"].value, "id":existing_user["id"]}
     ) 
     
     return {"token": token}
