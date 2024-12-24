@@ -1,10 +1,8 @@
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
-from databases import Database
 import sqlalchemy
-import database
+from database import metadata, engine, database
 from handlers import books_handler, users_handler
 from schemas.user import UserCreate, UserAuthorize
-from database import metadata
 from utils.token import validate_token_and_role
 
 
@@ -38,4 +36,8 @@ async def create_book(title = Form(...), author = Form(...), description = Form(
 
 @app.get("/books/get-book/{book_id}")
 async def download_book(book_id, user = Depends(validate_token_and_role(["user","admin","aprooved_user"]))):
-    return await books_handler.download_book(database,)
+    return await books_handler.download_book(database, book_id)
+
+@app.get("/books/download/{book_id}")
+async def download_book(book_id: int, user = Depends(validate_token_and_role(["user", "approved_user","admin"]))):
+    return await books_handler.download_book(database, book_id)

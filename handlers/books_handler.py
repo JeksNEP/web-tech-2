@@ -1,9 +1,10 @@
-from fastapi import Form, File, HTTPException
+from fastapi import Form, File, UploadFile, Depends, HTTPException
 import os
-from sqlalchemy import insert, select
-import sqlalchemy
-import database
+from databases import Database
 from models import Books
+from sqlalchemy import select, insert
+from starlette.responses import FileResponse
+from utils.token import validate_token_and_role
 
 UPLOAD_FOLDER = "uploaded_books"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -32,7 +33,7 @@ async def upload_book(
 
 async def get_book(db, book_id):
     query = select(Books).where(Books.c.id == book_id)
-    book = await database.fetch_one(query)
+    book = await Database.fetch_one(query)
 
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -52,6 +53,10 @@ async def download_book(db ,book_id):
 
     if not book:
         raise HTTPException(status_code=404, detail="book not found")
+    
+    file_path = book.link
 
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="file not found")
+    
+    return FileResponse(path=file_path, filename=os.path.basename(file_path))

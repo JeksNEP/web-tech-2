@@ -1,4 +1,9 @@
-uvicorn
-fastapi
-passlib
+sqlalchemy
+databases
+asyncpg
+psycopg2
+bcrypt
 python-jose
+fastapi
+uvicorn
+passlib
